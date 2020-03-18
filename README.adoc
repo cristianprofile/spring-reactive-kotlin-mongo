@@ -1,4 +1,4 @@
-# Every concepts that I learnt in a real reactive project running in production environment
+# Concepts learnt in a real reactive project running in production environment
 
 image:https://travis-ci.com/cristianprofile/autentia.svg?branch=master["Build Status", link="https://travis-ci.com/cristianprofile/autentia"]
 
