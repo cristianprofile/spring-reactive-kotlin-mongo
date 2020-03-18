@@ -1,0 +1,29 @@
+<configuration>
+
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <target>System.out</target>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] [%X] [traceId=%X{traceId}] [spanId=%X{spanId}]  %-5level %logger{36} - %msg%n</pattern>
+
+          <!--  * Adds {@linkplain MDC} properties "traceId", "parentId", "spanId" and "spanExportable"
+            * when a {@link brave.Tracer#currentSpan() span is current}. These can be used in log
+            * correlation. Supports backward compatibility of MDC entries by adding legacy "X-B3"
+            * entries to MDC context "X-B3-TraceId", "X-B3-ParentSpanId", "X-B3-SpanId" and
+            * "X-B3-Sampled"
+
+            https://reflectoring.io/tracing-with-spring-cloud-sleuth/
+
+            https://stackoverflow.com/questions/56767956/which-to-log-x-b3-spanid-or-spanid-x-b3-traceid-or-traceid-spring-sleuth
+
+            https://github.com/spring-cloud/spring-cloud-sleuth/issues/1221
+
+            https://github.com/spring-cloud/spring-cloud-sleuth/blob/master/spring-cloud-sleuth-core/src/main/java/org/springframework/cloud/sleuth/log/Slf4jScopeDecorator.java-->
+        </encoder>
+    </appender>
+    <root level="INFO">
+        <appender-ref ref="console"/>
+    </root>
+
+    <logger name="com.example.cromero" level="DEBUG"/>
+
+</configuration>
