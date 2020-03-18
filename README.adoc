@@ -39,6 +39,12 @@ Testing spring reactive endpoints is very easy:
    @Autowired
    private lateinit var webTestClient: WebTestClient
 
+   val pizzas = webTestClient.get()
+                .uri("/pizza")
+                .exchange()
+                .expectStatus().isOk
+                .returnResult<Pizza>().responseBody
+
 - Use StepVerifier to be able to test your endpoint. This element subscribes to
 reactive endpoint and will retrieve the elements that you need in your asserts.
 (Remember that nothing happens until a Subscriber subscribes to a Publisher, so StepVerifier does this work)
