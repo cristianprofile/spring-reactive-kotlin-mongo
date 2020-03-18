@@ -1,0 +1,52 @@
+# Every concepts that I learnt in a real reactive project running in production environment
+
+image:https://travis-ci.com/cristianprofile/autentia.svg?branch=master["Build Status", link="https://travis-ci.com/cristianprofile/autentia"]
+
+This project model a simple application managing pizzas. I am a vintage programmer so  I wont try to impress you
+using DDD (every talks about this buzzword but nobody knows how to implement it in real world). I'll use MVC using
+classical 3 layers option: Controller+Service+Repository.
+
+I'll use reactive programming style using Mono and Flux using Spring and Kotlin (Java is too old
+to improve faster). The repository that will be used is  reactive Mongo connector.
+
+
+- Non blocking application.
+- All layers must be tested with 100% coverage
+- I will use a lot of different operators using Mono and Flux
+- Code will be improved using Kotlin extensions
+
+## Prerequisites
+
+* Java 8+, Docker and maven 3 installed.
+
+## Testing controller layer
+
+Testing spring reactive endpoints is very easy:
+
+- Annotate your test with  @WebFluxTest
+
+ @WebFluxTest(controllers = [PizzaController::class])
+ @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+ class PizzaControllerTests
+
+- Mock your service layer:
+
+ @MockBean
+ private lateinit var pizzaService: PizzaService
+
+- Use webTestClient to test your controller.
+
+   @Autowired
+   private lateinit var webTestClient: WebTestClient
+
+- Use StepVerifier to be able to test your endpoint. This element subscribes to
+reactive endpoint and will retrieve the elements that you need in your asserts.
+(Remember that nothing happens until a Subscriber subscribes to a Publisher, so StepVerifier does this work)
+
+   StepVerifier.create(pizzas)
+                .expectNext(pizza1)
+                .expectNext(pizza2)
+                .expectNext(pizza3)
+                .verifyComplete()
+
+
