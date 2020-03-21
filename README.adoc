@@ -80,7 +80,6 @@ Assert in reactive functions is easy using StepVerifier:
 
   @Test
     fun `should get all pizzas (Must be 3)`() {
-
         val pizza = easyRandom.nextObject(Pizza::class.java)
         val addedPizza = pizzaService.addPizza(pizza).block()
         val foundPizza = pizzaService.getPizza(addedPizza!!.id)
@@ -88,8 +87,7 @@ Assert in reactive functions is easy using StepVerifier:
                 .expectNext(addedPizza)
                 .expectComplete()
                 .verify()
-
-    }
+  }
 
 
 
