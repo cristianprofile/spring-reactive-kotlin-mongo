@@ -17,6 +17,4 @@ class GlobalExceptionHandler {
         return Mono.just(mapOf("error" to ex.message))
     }
 
-
-
 }
