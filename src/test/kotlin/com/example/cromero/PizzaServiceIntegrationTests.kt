@@ -8,11 +8,14 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest
+import org.springframework.context.annotation.Import
 import reactor.test.StepVerifier
 import java.nio.charset.Charset
 
-@DataMongoTest
+
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@DataMongoTest
+@Import(value = [PizzaServiceImpl::class])
 class PizzaServiceIntegrationTests {
 
     @Autowired
@@ -36,8 +39,7 @@ class PizzaServiceIntegrationTests {
     @Test
     fun `should get all pizzas (Must be 3)`() {
 
-        val pizza = easyRandom.nextObject(Pizza::class.java).copy(id = 1)
-
+        val pizza = easyRandom.nextObject(Pizza::class.java)
         val addedPizza = pizzaService.addPizza(pizza).block()
         val foundPizza = pizzaService.getPizza(addedPizza!!.id)
         StepVerifier.create(foundPizza)
@@ -46,57 +48,5 @@ class PizzaServiceIntegrationTests {
                 .verify()
 
     }
-
-//    @Test
-//    fun `should get pizza with id 1`() {
-//
-//        val pizza1 = easyRandom.nextObject(Pizza::class.java).copy(id = 1)
-//
-//        `when`(pizzaService.getPizza(1L))
-//                .thenReturn(pizza1.toMono())
-//
-//        val pizza = webTestClient.get()
-//                .uri("/pizza/{id}", pizza1.id)
-//                .exchange()
-//                .expectStatus().isOk
-//                .returnResult<Pizza>().responseBody
-//
-//        StepVerifier.create(pizza)
-//                .expectNext(pizza1)
-//                .verifyComplete()
-//    }
-//
-//
-//    @Test
-//    fun `should add pizza `() {
-//
-//        val pizza1 = easyRandom.nextObject(Pizza::class.java).copy(id = 1)
-//
-//        `when`(pizzaService.addPizza(pizza1))
-//                .thenReturn(pizza1.toMono())
-//
-//        val pizza = webTestClient.post()
-//                .uri("/pizza")
-//                .bodyValue(pizza1)
-//                .exchange()
-//                .expectStatus().isOk
-//                .returnResult<Pizza>().responseBody
-//
-//        StepVerifier.create(pizza)
-//                .expectNext(pizza1)
-//                .verifyComplete()
-//    }
-//
-//    @Test
-//    fun `should throw bad format trying to add new pizza `() {
-//
-//        webTestClient.post()
-//                .uri("/pizza")
-//                .bodyValue("asdadadsasd")
-//                .exchange()
-//                .expectStatus().isBadRequest
-//                .returnResult<Pizza>().responseBody
-//
-//    }
 }
 

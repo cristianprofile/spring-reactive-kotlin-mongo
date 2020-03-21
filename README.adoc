@@ -6,6 +6,8 @@ This project model a simple application managing pizzas. I am a vintage programm
 using DDD (every talks about this buzzword but nobody knows how to implement it in real world). I'll use MVC using
 classical 3 layers option: Controller+Service+Repository.
 
+Spring mvc reactive+Spring Data Mongo makes easy to create this demo application.
+
 Reactive programming style using Mono and Flux using Spring and Kotlin (Java is too old
 to improve faster). The repository that will be used is  reactive Mongo connector:
 
@@ -53,5 +55,41 @@ reactive endpoint and will retrieve the elements that you need in your asserts.
                 .expectNext(pizza2)
                 .expectNext(pizza3)
                 .verifyComplete()
+
+## Testing Service layer
+
+Integration test is a my favorite approach testing service layer (It is slower than unit testing but
+make me feel more comfortable refactoring service methods using repository). Spring makes easy
+to test your database. A database in memory is a must so I decided to use Flapdoodle
+(https://github.com/flapdoodle-oss/de.flapdoodle.embed.mongo):
+
+   <dependency>
+            <groupId>de.flapdoodle.embed</groupId>
+            <artifactId>de.flapdoodle.embed.mongo</artifactId>
+            <scope>test</scope>
+  </dependency>
+
+Integration test must be annotated using Spring annotation @DataMongoTest:
+
+ @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+ @DataMongoTest
+ @Import(value = [PizzaServiceImpl::class])
+ class PizzaServiceIntegrationTests
+
+Assert in reactive functions is easy using StepVerifier:
+
+  @Test
+    fun `should get all pizzas (Must be 3)`() {
+
+        val pizza = easyRandom.nextObject(Pizza::class.java)
+        val addedPizza = pizzaService.addPizza(pizza).block()
+        val foundPizza = pizzaService.getPizza(addedPizza!!.id)
+        StepVerifier.create(foundPizza)
+                .expectNext(addedPizza)
+                .expectComplete()
+                .verify()
+
+    }
+
 
 
