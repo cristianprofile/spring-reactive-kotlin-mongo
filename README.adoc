@@ -48,7 +48,9 @@ Testing spring reactive endpoints is very easy:
 
 - Use StepVerifier to be able to test your endpoint. This element subscribes to
 reactive endpoint and will retrieve the elements that you need in your asserts.
-(Remember that nothing happens until a Subscriber subscribes to a Publisher, so StepVerifier does this work)
+
+_***Remember that nothing happens until a Subscriber subscribes to a Publisher, so StepVerifier does this work
+calling verifyComplete/verify
 
    StepVerifier.create(pizzas)
                 .expectNext(pizza1)
@@ -60,7 +62,11 @@ reactive endpoint and will retrieve the elements that you need in your asserts.
 
 Integration test is a my favorite approach testing service layer (It is slower than unit testing but
 make me feel more comfortable refactoring service methods using repository). Spring makes easy
-to test your database. A database in memory is a must so I decided to use Flapdoodle
+to test your database. A database in memory is a must so I decided to use Flapdoodle.
+
+_Remember use block when you need to force operators call (only tests): pizzaService.addPizza(pizza) do nothing
+pizzaService.addPizza.block() Subscribe to this Mono and it stop the program until a next signal is received._
+
 (https://github.com/flapdoodle-oss/de.flapdoodle.embed.mongo):
 
    <dependency>
