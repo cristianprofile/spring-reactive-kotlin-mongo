@@ -6,10 +6,9 @@ import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Mono
 import reactor.kotlin.core.publisher.toMono
 
-
 @RestController
 @RequestMapping("/pizza")
-class PizzaController (val pizzaService: PizzaService) {
+class PizzaController(val pizzaService: PizzaService) {
 
     private val logger = KotlinLogging.logger {}
 
@@ -21,18 +20,13 @@ class PizzaController (val pizzaService: PizzaService) {
     }
 
     @GetMapping("{id}")
-    fun getPizza(@PathVariable id: Long) = pizzaService.getPizzaNonReactive(id)
+    fun getPizza(@PathVariable id: Long) = pizzaService.getPizza(id)
 
     @GetMapping
-    fun getPizzas()= pizzaService.getPizzas()
-
-    @GetMapping("/reactive")
-    fun getPizzasReactive()= pizzaService.getPizzasReactive()
-
+    fun getPizzas() = pizzaService.getPizzas()
 
     @PostMapping
-    fun post(@RequestBody pizza: Pizza)= pizzaService.addPizza(pizza)
-
+    fun post(@RequestBody pizza: Pizza) = pizzaService.addPizza(pizza)
 
 }
 

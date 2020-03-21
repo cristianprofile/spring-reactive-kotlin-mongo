@@ -46,12 +46,12 @@ class PizzaControllerTests {
     fun `should get all pizzas (Must be 3)`() {
 
         val pizza1 = easyRandom.nextObject(Pizza::class.java).copy(id = 1)
-        val pizza2 =easyRandom.nextObject(Pizza::class.java).copy(id = 2)
-        val pizza3 =easyRandom.nextObject(Pizza::class.java).copy(id = 3)
+        val pizza2 = easyRandom.nextObject(Pizza::class.java).copy(id = 2)
+        val pizza3 = easyRandom.nextObject(Pizza::class.java).copy(id = 3)
 
 
         `when`(pizzaService.getPizzas())
-                .thenReturn(listOf(pizza1,pizza2,pizza3).toFlux())
+                .thenReturn(listOf(pizza1, pizza2, pizza3).toFlux())
 
         val pizzas = webTestClient.get()
                 .uri("/pizza")
@@ -71,11 +71,11 @@ class PizzaControllerTests {
 
         val pizza1 = easyRandom.nextObject(Pizza::class.java).copy(id = 1)
 
-        `when`(pizzaService.getPizzaNonReactive(1L))
+        `when`(pizzaService.getPizza(1L))
                 .thenReturn(pizza1.toMono())
 
         val pizza = webTestClient.get()
-                .uri("/pizza/{id}",pizza1.id)
+                .uri("/pizza/{id}", pizza1.id)
                 .exchange()
                 .expectStatus().isOk
                 .returnResult<Pizza>().responseBody
@@ -84,7 +84,6 @@ class PizzaControllerTests {
                 .expectNext(pizza1)
                 .verifyComplete()
     }
-
 
 
     @Test
@@ -118,5 +117,4 @@ class PizzaControllerTests {
                 .returnResult<Pizza>().responseBody
 
     }
-
 }
