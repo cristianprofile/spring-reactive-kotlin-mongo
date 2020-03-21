@@ -8,6 +8,5 @@ import reactor.blockhound.BlockHound
 class DemoApplication
 
     fun main(args: Array<String>) {
-        BlockHound.install()
         runApplication<DemoApplication>(*args)
     }
