@@ -1,6 +1,6 @@
 # Concepts learnt in a real reactive project running in production environment
 
-image:https://travis-ci.com/cristianprofile/spring-boot-mvc-kotlin-crud.svg?branch=master["Build Status", link="https://travis-ci.com/cristianprofile/spring-boot-mvc-kotlin-crud"]
+image:https://travis-ci.com/cristianprofile/spring-reactive-kotlin-mongo.svg?branch=master["Build Status", link="https://travis-ci.com/cristianprofile/spring-reactive-kotlin-mongo"]
 
 This project model a simple application managing pizzas. I am a vintage programmer so  I wont try to impress you
 using DDD (every talks about this buzzword but nobody knows how to implement it in real world). I'll use MVC using
