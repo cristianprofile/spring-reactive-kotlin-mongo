@@ -61,8 +61,8 @@ Testing spring reactive endpoints is very easy:
 - Use StepVerifier to be able to test your endpoint. This element subscribes to
 reactive endpoint and will retrieve the elements that you need in your asserts.
 
-_***Remember that nothing happens until a Subscriber subscribes to a Publisher, so StepVerifier does this work
-calling verifyComplete/verify
+*Remember that nothing happens until a Subscriber subscribes to a Publisher, so StepVerifier does this work
+calling verifyComplete/verify*
 
 Java Code:
 
