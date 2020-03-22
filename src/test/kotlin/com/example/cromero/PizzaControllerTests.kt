@@ -14,7 +14,7 @@ import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.returnResult
 import reactor.kotlin.core.publisher.toFlux
 import reactor.kotlin.core.publisher.toMono
-import reactor.test.StepVerifier
+import reactor.kotlin.test.test
 import java.nio.charset.Charset
 
 @WebFluxTest(controllers = [PizzaController::class])
@@ -59,7 +59,7 @@ class PizzaControllerTests {
                 .expectStatus().isOk
                 .returnResult<Pizza>().responseBody
 
-        StepVerifier.create(pizzas)
+        pizzas.test()
                 .expectNext(pizza1)
                 .expectNext(pizza2)
                 .expectNext(pizza3)
@@ -80,7 +80,7 @@ class PizzaControllerTests {
                 .expectStatus().isOk
                 .returnResult<Pizza>().responseBody
 
-        StepVerifier.create(pizza)
+        pizza.test()
                 .expectNext(pizza1)
                 .verifyComplete()
     }
@@ -101,7 +101,7 @@ class PizzaControllerTests {
                 .expectStatus().isOk
                 .returnResult<Pizza>().responseBody
 
-        StepVerifier.create(pizza)
+        pizza.test()
                 .expectNext(pizza1)
                 .verifyComplete()
     }

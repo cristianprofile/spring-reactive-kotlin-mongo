@@ -3,11 +3,11 @@ package com.example.cromero
 
 import org.jeasy.random.EasyRandom
 import org.jeasy.random.EasyRandomParameters
-import org.jeasy.random.FieldPredicates
 import org.junit.jupiter.api.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest
 import org.springframework.context.annotation.Import
+import reactor.kotlin.test.test
 import reactor.test.StepVerifier
 import java.nio.charset.Charset
 
@@ -49,8 +49,7 @@ class PizzaServiceIntegrationTests {
         pizzaService.addPizza(pizza3).block()
         val pizzas = pizzaService.getPizzas()
 
-        StepVerifier.create(pizzas)
-                .expectNext(pizza1)
+        pizzas.test() .expectNext(pizza1)
                 .expectNext(pizza2)
                 .expectNext(pizza3)
                 .verifyComplete()
@@ -64,7 +63,7 @@ class PizzaServiceIntegrationTests {
         val pizza = easyRandom.nextObject(Pizza::class.java)
         val addedPizza = pizzaService.addPizza(pizza).block()
         val foundPizza = pizzaService.getPizza(addedPizza!!.id)
-        StepVerifier.create(foundPizza)
+        foundPizza.test()
                 .expectNext(addedPizza)
                 .verifyComplete()
     }
@@ -77,7 +76,7 @@ class PizzaServiceIntegrationTests {
         val block = pizzaService.addPizza(pizza).block()
         val duplicatedPizza = pizzaService.addPizza(pizza)
 
-        StepVerifier.create(duplicatedPizza)
+        duplicatedPizza.test()
                 .expectError(PizzaDuplicatedException::class.java)
                 .verify()
 
@@ -91,10 +90,8 @@ class PizzaServiceIntegrationTests {
         pizzaService.addPizza(pizza).block()
         val foundPizza = pizzaService.getPizza(4444)
 
-        StepVerifier.create(foundPizza)
-                .expectError(PizzaDoesntExistException::class.java)
+        foundPizza.test().expectError(PizzaDoesntExistException::class.java)
                 .verify()
-
     }
 
     @Test
@@ -105,8 +102,7 @@ class PizzaServiceIntegrationTests {
         pizzaService.addPizza(pizza).block()
         val deletedPizza = pizzaService.deletePizza(pizza.id)
 
-        StepVerifier.create(deletedPizza)
-                .verifyComplete()
+        deletedPizza.test().verifyComplete()
 
     }
 

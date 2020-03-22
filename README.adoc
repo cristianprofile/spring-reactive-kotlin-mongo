@@ -20,6 +20,18 @@ to improve faster). The repository that will be used is  reactive Mongo connecto
 
 * Java 8+, Docker and maven 3 installed.
 
+## Project Reactor Kotlin support
+
+Thanks to its great Java interoperability and to Kotlin extensions, Reactor Kotlin APIs
+leverage regular Java APIs and are additionally enhanced by a few Kotlin-specific APIs that
+are available out of the box within Reactor artifacts.
+
+image::/image/kotlin-extensions.png?raw=true[project modules]
+
+
+
+https://projectreactor.io/docs/core/release/reference/#kotlin-extensions
+
 ## Testing controller layer
 
 Testing spring reactive endpoints is very easy:
@@ -52,7 +64,17 @@ reactive endpoint and will retrieve the elements that you need in your asserts.
 _***Remember that nothing happens until a Subscriber subscribes to a Publisher, so StepVerifier does this work
 calling verifyComplete/verify
 
+Java Code:
+
    StepVerifier.create(pizzas)
+                .expectNext(pizza1)
+                .expectNext(pizza2)
+                .expectNext(pizza3)
+                .verifyComplete()
+
+Using Kotlin extension:
+
+  pizzas.test()
                 .expectNext(pizza1)
                 .expectNext(pizza2)
                 .expectNext(pizza3)
@@ -84,16 +106,15 @@ Integration test must be annotated using Spring annotation @DataMongoTest:
 
 Assert in reactive functions is easy using StepVerifier:
 
-  @Test
-    fun `should get all pizzas (Must be 3)`() {
+    @Test
+    fun `should add pizza and get by id`() {
         val pizza = easyRandom.nextObject(Pizza::class.java)
         val addedPizza = pizzaService.addPizza(pizza).block()
         val foundPizza = pizzaService.getPizza(addedPizza!!.id)
-        StepVerifier.create(foundPizza)
+        foundPizza.test()
                 .expectNext(addedPizza)
-                .expectComplete()
-                .verify()
-  }
+                .verifyComplete()
+    }
 
 
 
