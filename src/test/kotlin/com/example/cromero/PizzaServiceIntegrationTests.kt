@@ -73,14 +73,31 @@ class PizzaServiceIntegrationTests {
     fun `shouldn't add 2 pizza with the same name`() {
 
         val pizza = easyRandom.nextObject(Pizza::class.java)
-        val block = pizzaService.addPizza(pizza).block()
-        val duplicatedPizza = pizzaService.addPizza(pizza)
+        pizzaService.addPizza(pizza).block()
+        val duplicatedPizza = pizzaService.addPizza(pizza.copy(description = "anotherDescription"))
 
         duplicatedPizza.test()
                 .expectError(PizzaDuplicatedException::class.java)
                 .verify()
 
     }
+
+
+    @Test
+    @Order(3)
+    fun `shouldn't add 2 pizza with the same description`() {
+
+        val pizza = easyRandom.nextObject(Pizza::class.java)
+        pizzaService.addPizza(pizza).block()
+        val duplicatedPizza = pizzaService.addPizza((pizza.copy(name = "anotherName")))
+
+        duplicatedPizza.test()
+                .expectError(PizzaDuplicatedException::class.java)
+                .verify()
+
+    }
+
+
 
     @Test
     @Order(4)

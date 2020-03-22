@@ -9,6 +9,7 @@ import reactor.core.publisher.Mono
 interface PizzaRepository : ReactiveCrudRepository<Pizza, Long> {
     fun findByName(name: String): Mono<Pizza>
     fun existsByName(name: String): Mono<Boolean>
+    fun existsByDescription(description: String): Mono<Boolean>
     fun findByDescription(name: String): Mono<Pizza>
     fun existsByDescriptionNot(name: String): Mono<Boolean>
 }

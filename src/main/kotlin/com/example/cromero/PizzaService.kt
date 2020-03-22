@@ -8,6 +8,7 @@ import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import reactor.kotlin.core.publisher.toMono
 import reactor.kotlin.extra.bool.logicalAnd
+import reactor.kotlin.extra.bool.logicalOr
 import reactor.kotlin.extra.bool.not
 
 interface PizzaService {
@@ -34,7 +35,7 @@ class PizzaServiceImpl(val pizzaRepository: PizzaRepository) : PizzaService {
 
     @Transactional
     override fun addPizza(pizza: Pizza): Mono<Pizza> {
-        return pizzaRepository.existsByName(pizza.name)
+        return pizzaRepository.existsByName(pizza.name).logicalOr(pizzaRepository.existsByDescription(pizza.description))
                 .filter {!it}
                 .flatMap {
                     pizzaRepository.save(pizza)

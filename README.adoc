@@ -32,6 +32,28 @@ image::/image/kotlin-extensions.png?raw=true[project modules]
 
 https://projectreactor.io/docs/core/release/reference/#kotlin-extensions
 
+## Reactor's operator
+
+    @Transactional
+    override fun addPizza(pizza: Pizza): Mono<Pizza> {
+        return pizzaRepository.existsByName(pizza.name).logicalOr(pizzaRepository.existsByDescription(pizza.description))
+                .filter {!it}
+                .flatMap {
+                    pizzaRepository.save(pizza)
+                }
+                .switchIfEmpty(PizzaDuplicatedException(pizza.name).toMono())
+    }
+
+- logicalOr: operator used to link 2 observer publishing Mono<Boolean>
+- flatMap: when you need to convert elements calling to another method returning mono or flux
+- filter: filter elements published if condition is true (example if condition=true then)
+- switchIfEmpty: if empty result is published by observer
+- doOnNext: if you do not need to change values received by observer. Example logging
+
+
+
+
+
 ## Testing controller layer
 
 Testing spring reactive endpoints is very easy:
