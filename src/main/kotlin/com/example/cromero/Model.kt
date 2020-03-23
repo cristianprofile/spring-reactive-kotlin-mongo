@@ -1,3 +1,5 @@
 package com.example.cromero
 
-data class Pizza(val id: Long, val name:String, val description:String)
+import org.springframework.data.annotation.Id
+
+data class Pizza(@Id val id: Long, val name:String, val description:String)

@@ -1,11 +1,14 @@
 package com.example.cromero
 
 
+import com.example.cromero.dto.PizzaCreate
+import com.example.cromero.dto.PizzaOut
 import org.jeasy.random.EasyRandom
 import org.jeasy.random.EasyRandomParameters
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import org.mockito.ArgumentMatchers.any
 import org.mockito.BDDMockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
@@ -45,9 +48,9 @@ class PizzaControllerTests {
     @Test
     fun `should get all pizzas (Must be 3)`() {
 
-        val pizza1 = easyRandom.nextObject(Pizza::class.java).copy(id = 1)
-        val pizza2 = easyRandom.nextObject(Pizza::class.java).copy(id = 2)
-        val pizza3 = easyRandom.nextObject(Pizza::class.java).copy(id = 3)
+        val pizza1 = easyRandom.nextObject(PizzaOut::class.java).copy(id = 1)
+        val pizza2 = easyRandom.nextObject(PizzaOut::class.java).copy(id = 2)
+        val pizza3 = easyRandom.nextObject(PizzaOut::class.java).copy(id = 3)
 
 
         `when`(pizzaService.getPizzas())
@@ -57,7 +60,7 @@ class PizzaControllerTests {
                 .uri("/pizza")
                 .exchange()
                 .expectStatus().isOk
-                .returnResult<Pizza>().responseBody
+                .returnResult<PizzaOut>().responseBody
 
         pizzas.test()
                 .expectNext(pizza1)
@@ -69,7 +72,7 @@ class PizzaControllerTests {
     @Test
     fun `should get pizza with id 1`() {
 
-        val pizza1 = easyRandom.nextObject(Pizza::class.java).copy(id = 1)
+        val pizza1 = easyRandom.nextObject(PizzaOut::class.java).copy(id = 1)
 
         `when`(pizzaService.getPizza(1L))
                 .thenReturn(pizza1.toMono())
@@ -78,7 +81,7 @@ class PizzaControllerTests {
                 .uri("/pizza/{id}", pizza1.id)
                 .exchange()
                 .expectStatus().isOk
-                .returnResult<Pizza>().responseBody
+                .returnResult<PizzaOut>().responseBody
 
         pizza.test()
                 .expectNext(pizza1)
@@ -89,20 +92,20 @@ class PizzaControllerTests {
     @Test
     fun `should add pizza `() {
 
-        val pizza1 = easyRandom.nextObject(Pizza::class.java).copy(id = 1)
+        val pizza = easyRandom.nextObject(PizzaCreate::class.java).copy(id = 1)
+        val pizzaOut = PizzaOut(id=1,name=pizza.name,description = pizza.description)
 
-        `when`(pizzaService.addPizza(pizza1))
-                .thenReturn(pizza1.toMono())
+        `when`(pizzaService.addPizza(pizza)).thenReturn(pizzaOut.toMono())
 
-        val pizza = webTestClient.post()
+        val pizzaCreated = webTestClient.post()
                 .uri("/pizza")
-                .bodyValue(pizza1)
+                .bodyValue(pizza)
                 .exchange()
                 .expectStatus().isOk
-                .returnResult<Pizza>().responseBody
+                .returnResult<PizzaOut>().responseBody
 
-        pizza.test()
-                .expectNext(pizza1)
+        pizzaCreated.test()
+                .expectNext(pizzaOut)
                 .verifyComplete()
     }
 

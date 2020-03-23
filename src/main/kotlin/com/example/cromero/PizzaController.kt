@@ -1,6 +1,9 @@
 package com.example.cromero
 
+import com.example.cromero.dto.PizzaCreate
 import mu.KotlinLogging
+import org.springframework.data.domain.Pageable
+import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Mono
@@ -19,14 +22,20 @@ class PizzaController(val pizzaService: PizzaService) {
         return "Pizza not found".toMono()
     }
 
-    @GetMapping("{id}")
-    fun getPizza(@PathVariable id: Long) = pizzaService.getPizza(id)
 
     @GetMapping
     fun getPizzas() = pizzaService.getPizzas()
 
+
+    @GetMapping("/paginated")
+    fun getPizzasPaginated(@PageableDefault(size = 2, page =0) pageable: Pageable) = pizzaService.findAll(pageable)
+
+    @GetMapping("{id}")
+    fun getPizza(@PathVariable id: Long) = pizzaService.getPizza(id)
+    
+
     @PostMapping
-    fun post(@RequestBody pizza: Pizza) = pizzaService.addPizza(pizza)
+    fun post(@RequestBody pizza: PizzaCreate) = pizzaService.addPizza(pizza)
 
 }
 

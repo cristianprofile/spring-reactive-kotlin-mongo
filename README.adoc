@@ -50,7 +50,17 @@ https://projectreactor.io/docs/core/release/reference/#kotlin-extensions
 - switchIfEmpty: if empty result is published by observer
 - doOnNext: if you do not need to change values received by observer. Example logging
 
+## Spring data mongo reactive pagination
 
+Spring data mongo reactive does not contain findAll paginated (out of the box). The solution
+is very easy. I have created 2 different approach: 1 using query method an another using
+default Query creation from method names (both create the same query)
+
+    // 1. query method
+    @Query("{ id: { \$exists: true }}")
+    fun findAll(page: Pageable): Flux<Pizza>
+    // 2. query creation from method names
+    fun findByIdNotNull(page: Pageable): Flux<Pizza>
 
 
 
