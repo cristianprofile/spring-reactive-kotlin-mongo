@@ -54,16 +54,14 @@ https://projectreactor.io/docs/core/release/reference/#kotlin-extensions
   The code that you execute in switchIfEmpty is expected to be without side-effects.
   Unfortunately the documentation does not mention it, at the time of writing this blog.
   switchIfEmpty does eager computation of the value provided to it. So in the below example,
-  even if you find the order in OrdersDB, it will still save in MissingOrdersDB due to it’s eager computation.
-
-  One way is to use the defer keyword inside switchIfEmpty.
+  even if you find the order in OrdersDB, it will still save in MissingOrdersDB due to it’s eager computation.One way is to use the defer keyword inside switchIfEmpty.
 
  return ordersDbRepo.findById("order-id")
         .switchIfEmpty(
                 Mono.defer { missingOrdersDb.save(Order("order-id", false)) })
 
- There is also another way to solve it as shown in below code snippet. Notice the switchIfEmpty is an extension function
- and can be accessed using the import as shown ( Extension function feature is specific to Kotlin.)
+There is also another way to solve it as shown in below code snippet. Notice the switchIfEmpty is an extension function
+and can be accessed using the import as shown ( Extension function feature is specific to Kotlin.)
 
 
  return ordersDbRepo.findById("order-id")
