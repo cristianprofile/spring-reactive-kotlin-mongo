@@ -54,7 +54,7 @@ class PizzaServiceIntegrationTests {
         val sort = Sort.by(Sort.Direction.ASC, "name")
         var pageable = PageRequest.of(0, 2,sort)
 
-        var pizzas = pizzaService.findAll(pageable)
+        var pizzas = pizzaService.findAllPaginated(pageable)
 
         pizzas.test()
                 .expectNext(pizza1Created)
@@ -63,19 +63,19 @@ class PizzaServiceIntegrationTests {
 
         pageable = PageRequest.of(1, 2,sort)
 
-        pizzas=pizzaService.findAll(pageable)
+        pizzas=pizzaService.findAllPaginated(pageable)
         pizzas.test()
                 .expectNext(pizza3Created)
                 .verifyComplete()
 
         pageable = PageRequest.of(2, 2,sort)
 
-        pizzas=pizzaService.findAll(pageable)
+        pizzas=pizzaService.findAllPaginated(pageable)
         pizzas.test()
                 .verifyComplete()
 
 
-        pizzas = pizzaService.getPizzas()
+        pizzas = pizzaService.findAll()
         pizzas.test().expectNext(pizza1Created)
                 .expectNext(pizza2Created)
                 .expectNext(pizza3Created)

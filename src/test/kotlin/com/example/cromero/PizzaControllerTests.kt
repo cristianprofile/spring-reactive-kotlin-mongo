@@ -52,7 +52,7 @@ class PizzaControllerTests {
         val pizza3 = easyRandom.nextObject(PizzaOut::class.java).copy(id = 3)
 
 
-        `when`(pizzaService.getPizzas())
+        `when`(pizzaService.findAll())
                 .thenReturn(listOf(pizza1, pizza2, pizza3).toFlux())
 
         val pizzas = webTestClient.get()
@@ -92,7 +92,7 @@ class PizzaControllerTests {
     fun `should add pizza `() {
 
         val pizza = easyRandom.nextObject(PizzaCreate::class.java).copy(id = 1)
-        val pizzaOut = PizzaOut(id=1,name=pizza.name,description = pizza.description)
+        val pizzaOut = PizzaOut(id=1,name=pizza.name,description = pizza.description,price = pizza.price)
 
         `when`(pizzaService.addPizza(pizza)).thenReturn(pizzaOut.toMono())
 

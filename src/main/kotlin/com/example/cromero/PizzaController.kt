@@ -1,11 +1,12 @@
 package com.example.cromero
 
+import org.springframework.data.domain.PageRequest
 import com.example.cromero.dto.PizzaCreate
+import com.example.cromero.dto.PizzaOut
 import mu.KotlinLogging
-import org.springframework.data.domain.Pageable
-import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import reactor.kotlin.core.publisher.toMono
 
@@ -24,18 +25,28 @@ class PizzaController(val pizzaService: PizzaService) {
 
 
     @GetMapping
-    fun getPizzas() = pizzaService.getPizzas()
+    fun getPizzasPaginated(@RequestParam(value = "page")  page:Int?, @RequestParam(value = "count") size:Int?): Flux<PizzaOut> {
+        return if (page!=null && size!=null)
+        {
+            val pageable=PageRequest.of(page, size)
+            logger.info { "Page request: $pageable"}
+            pizzaService.findAllPaginated(pageable)
+        }
+        else
+        {
+            pizzaService.findAll()
+        }
+    }
 
-
-    @GetMapping("/paginated")
-    fun getPizzasPaginated(@PageableDefault(size = 2, page =0) pageable: Pageable) = pizzaService.findAll(pageable)
 
     @GetMapping("{id}")
     fun getPizza(@PathVariable id: Long) = pizzaService.getPizza(id)
-    
+
 
     @PostMapping
     fun post(@RequestBody pizza: PizzaCreate) = pizzaService.addPizza(pizza)
 
 }
+
+
 

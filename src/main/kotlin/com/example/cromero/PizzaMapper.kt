@@ -6,11 +6,13 @@ import com.example.cromero.dto.PizzaOut
 fun Pizza.convertToPizzaOut() = PizzaOut(
         id = id,
         name = name,
-        description = description)
+        description = description,
+        price = price)
 
 fun PizzaCreate.convertToPizza() = Pizza(
         id = id,
         name = name,
-        description = description)
+        description = description,
+        price = price)
 
 

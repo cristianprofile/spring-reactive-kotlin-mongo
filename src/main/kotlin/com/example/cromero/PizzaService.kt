@@ -13,10 +13,10 @@ import reactor.kotlin.extra.bool.logicalOr
 
 interface PizzaService {
     fun addPizza(pizza: PizzaCreate): Mono<PizzaOut>
-    fun getPizzas(): Flux<PizzaOut>
+    fun findAll(): Flux<PizzaOut>
     fun getPizza(id: Long): Mono<PizzaOut>
     fun deletePizza(id: Long): Mono<Void>
-    fun findAll(pageable: Pageable): Flux<PizzaOut>
+    fun findAllPaginated(pageable: Pageable): Flux<PizzaOut>
 }
 
 @Service
@@ -25,7 +25,7 @@ class PizzaServiceImpl(val pizzaRepository: PizzaRepository) : PizzaService {
     private val logger = KotlinLogging.logger {}
 
     @Transactional
-    override fun getPizzas(): Flux<PizzaOut> {
+    override fun findAll(): Flux<PizzaOut> {
         return pizzaRepository.findAll()
                 .doOnNext { pizza -> logger.info("Pizza Found $pizza") }
                 .map { it.convertToPizzaOut() }
@@ -40,7 +40,7 @@ class PizzaServiceImpl(val pizzaRepository: PizzaRepository) : PizzaService {
     }
 
     @Transactional
-    override fun findAll(pageable: Pageable): Flux<PizzaOut> {
+    override fun findAllPaginated(pageable: Pageable): Flux<PizzaOut> {
         return pizzaRepository.findByIdNotNull(pageable).map { it.convertToPizzaOut() }
     }
 
