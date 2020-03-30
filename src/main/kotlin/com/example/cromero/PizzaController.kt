@@ -26,16 +26,14 @@ class PizzaController(val pizzaService: PizzaService) {
 
     @GetMapping
     fun getPizzasPaginated(@RequestParam(value = "page")  page:Int?, @RequestParam(value = "count") size:Int?): Flux<PizzaOut> {
-        return if (page!=null && size!=null)
-        {
-            val pageable=PageRequest.of(page, size)
-            logger.info { "Page request: $pageable"}
-            pizzaService.findAllPaginated(pageable)
-        }
-        else
-        {
-            pizzaService.findAll()
-        }
+        return (page!=null && size!=null).toMono()
+                .filter { it }
+                .flatMapMany {
+                    val pageable=PageRequest.of(page!!, size!!)
+                    logger.info { "Page request: $pageable"}
+                    pizzaService.findAllPaginated(pageable)
+                }
+                .switchIfEmpty{ pizzaService.findAll()}
     }
 
 
