@@ -1,9 +1,9 @@
 package com.example.cromero
 
-import org.springframework.data.domain.PageRequest
 import com.example.cromero.dto.PizzaCreate
 import com.example.cromero.dto.PizzaOut
 import mu.KotlinLogging
+import org.springframework.data.domain.PageRequest
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Flux
@@ -25,15 +25,14 @@ class PizzaController(val pizzaService: PizzaService) {
 
 
     @GetMapping
-    fun getPizzasPaginated(@RequestParam(value = "page")  page:Int?, @RequestParam(value = "count") size:Int?): Flux<PizzaOut> {
-        return (page!=null && size!=null).toMono()
-                .filter { it }
-                .flatMapMany {
-                    val pageable=PageRequest.of(page!!, size!!)
-                    logger.info { "Page request: $pageable"}
-                    pizzaService.findAllPaginated(pageable)
-                }
-                .switchIfEmpty{ pizzaService.findAll()}
+    fun getPizzasPaginated(@RequestParam(value = "page") page: Int?, @RequestParam(value = "count") size: Int?): Flux<PizzaOut> {
+        return if (page != null && size != null) {
+            val pageable = PageRequest.of(page, size)
+            logger.info { "Page request: $pageable" }
+            pizzaService.findAllPaginated(pageable)
+        } else {
+            pizzaService.findAll()
+        }
     }
 
 
