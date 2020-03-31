@@ -105,8 +105,7 @@ class PizzaServiceIntegrationTests {
         val duplicatedPizza = pizzaService.addPizza(pizza.copy(description = "anotherDescription"))
 
         duplicatedPizza.test()
-                .expectError(PizzaDuplicatedException::class.java)
-                .verify()
+                .verifyError(PizzaDuplicatedException::class.java)
 
     }
 
@@ -120,8 +119,7 @@ class PizzaServiceIntegrationTests {
         val duplicatedPizza = pizzaService.addPizza((pizza.copy(name = "anotherName")))
 
         duplicatedPizza.test()
-                .expectError(PizzaDuplicatedException::class.java)
-                .verify()
+                .verifyError(PizzaDuplicatedException::class.java)
 
     }
 
@@ -133,8 +131,8 @@ class PizzaServiceIntegrationTests {
         pizzaService.addPizza(pizza).block()
         val foundPizza = pizzaService.getPizza(4444)
 
-        foundPizza.test().expectError(PizzaDoesntExistException::class.java)
-                .verify()
+        foundPizza.test()
+                .verifyError(PizzaDoesntExistException::class.java)
     }
 
     @Test
