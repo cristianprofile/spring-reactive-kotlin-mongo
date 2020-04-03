@@ -17,6 +17,11 @@ interface PizzaService {
     fun getPizza(id: Long): Mono<PizzaOut>
     fun deletePizza(id: Long): Mono<Void>
     fun findAllPaginated(pageable: Pageable): Flux<PizzaOut>
+    fun findAllPaginatedToList(pageable: Pageable): Mono<MutableList<PizzaOut>>
+    fun findAllPaginatedToSortedList(pageable: Pageable): Mono<MutableList<PizzaOut>>
+    fun findAllToMapByName(): Mono<MutableMap<String, PizzaOut>>
+    fun allPizzaExpensive(): Mono<Boolean>
+    fun existAnyPizzaFree(): Mono<Boolean>
 }
 
 @Service
@@ -42,6 +47,32 @@ class PizzaServiceImpl(val pizzaRepository: PizzaRepository) : PizzaService {
     @Transactional
     override fun findAllPaginated(pageable: Pageable): Flux<PizzaOut> {
         return pizzaRepository.findByIdNotNull(pageable).map { it.convertToPizzaOut() }
+    }
+
+
+    @Transactional
+    override fun findAllPaginatedToList(pageable: Pageable): Mono<MutableList<PizzaOut>> {
+        return pizzaRepository.findByIdNotNull(pageable).map { it.convertToPizzaOut() }.collectList()
+    }
+
+    @Transactional
+    override fun findAllPaginatedToSortedList(pageable: Pageable): Mono<MutableList<PizzaOut>> {
+        return pizzaRepository.findByIdNotNull(pageable).map { it.convertToPizzaOut() }.collectSortedList { o1, o2 -> o1.name.compareTo(o2.name) }
+    }
+
+    @Transactional
+    override fun findAllToMapByName(): Mono<MutableMap<String, PizzaOut>> {
+        return pizzaRepository.findAll().map { it.convertToPizzaOut() }.collectMap { it.name }
+    }
+
+    @Transactional
+    override fun allPizzaExpensive(): Mono<Boolean> {
+        return pizzaRepository.findAll().map { it.convertToPizzaOut() }.all { pizza->pizza.price>1000 }
+    }
+
+    @Transactional
+    override fun existAnyPizzaFree(): Mono<Boolean> {
+        return pizzaRepository.findAll().map { it.convertToPizzaOut() }.any { pizza->pizza.price==0 }
     }
 
     @Transactional

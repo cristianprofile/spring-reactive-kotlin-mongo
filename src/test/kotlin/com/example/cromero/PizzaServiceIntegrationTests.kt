@@ -44,9 +44,9 @@ class PizzaServiceIntegrationTests {
     @Order(1)
     fun `should get all pizzas paginated- should get all pizzas without using pagination`() {
 
-        val pizza1 = easyRandom.nextObject(PizzaCreate::class.java).copy(name="aoster")
-        val pizza2 = easyRandom.nextObject(PizzaCreate::class.java).copy(name="but")
-        val pizza3 = easyRandom.nextObject(PizzaCreate::class.java).copy(name="rolling")
+        val pizza1 = easyRandom.nextObject(PizzaCreate::class.java).copy(name="aoster",price = 1001)
+        val pizza2 = easyRandom.nextObject(PizzaCreate::class.java).copy(name="but",price = 1002)
+        val pizza3 = easyRandom.nextObject(PizzaCreate::class.java).copy(name="rolling",price = 0)
         val pizza1Created = pizzaService.addPizza(pizza1).block()
         val pizza2Created = pizzaService.addPizza(pizza2).block()
         val pizza3Created = pizzaService.addPizza(pizza3).block()
@@ -76,10 +76,34 @@ class PizzaServiceIntegrationTests {
 
 
         pizzas = pizzaService.findAll()
-        pizzas.test().expectNext(pizza1Created)
+        pizzas.test()
+                .expectNext(pizza1Created)
                 .expectNext(pizza2Created)
                 .expectNext(pizza3Created)
                 .verifyComplete()
+
+        val allPizzaExpensive = pizzaService.allPizzaExpensive()
+        allPizzaExpensive.test()
+                .expectNext(false)
+                .verifyComplete()
+
+        val existAnyPizzaFree = pizzaService.existAnyPizzaFree()
+        existAnyPizzaFree.test()
+                .expectNext(true)
+                .verifyComplete()
+
+        pageable = PageRequest.of(0, 4,sort)
+        val findAllPaginatedToList = pizzaService.findAllPaginatedToList(pageable)
+        findAllPaginatedToList.test()
+                .expectNext(mutableListOf(pizza1Created!!,pizza2Created!!,pizza3Created!!))
+                .verifyComplete()
+
+        val findAllPaginatedToSortedList= pizzaService.findAllPaginatedToSortedList(pageable)
+
+        findAllPaginatedToSortedList.test()
+                .expectNext(mutableListOf(pizza1Created!!,pizza2Created!!,pizza3Created!!))
+                .verifyComplete()
+
 
     }
 
