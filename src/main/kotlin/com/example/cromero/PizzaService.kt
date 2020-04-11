@@ -22,6 +22,8 @@ interface PizzaService {
     fun findAllToMapByName(): Mono<MutableMap<String, PizzaOut>>
     fun allPizzaExpensive(): Mono<Boolean>
     fun existAnyPizzaFree(): Mono<Boolean>
+    @Transactional
+    fun findAllNotExistWithDescriptionUsingWhenOperator(s: String): Flux<PizzaOut>
 }
 
 @Service
@@ -74,6 +76,13 @@ class PizzaServiceImpl(val pizzaRepository: PizzaRepository) : PizzaService {
     override fun existAnyPizzaFree(): Mono<Boolean> {
         return pizzaRepository.findAll().map { it.convertToPizzaOut() }.any { pizza->pizza.price==0 }
     }
+
+    @Transactional
+    override fun findAllNotExistWithDescriptionUsingWhenOperator(description: String): Flux<PizzaOut> {
+        return pizzaRepository.findAll().filterWhen { pizzaRepository.existsByDescriptionNot(description)}
+                .map { it.convertToPizzaOut() }
+    }
+
 
     @Transactional
     override fun addPizza(pizza: PizzaCreate): Mono<PizzaOut> {

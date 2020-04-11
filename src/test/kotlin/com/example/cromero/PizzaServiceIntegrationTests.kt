@@ -39,20 +39,19 @@ class PizzaServiceIntegrationTests {
     }
 
 
-
     @Test
     @Order(1)
     fun `should get all pizzas paginated- should get all pizzas without using pagination`() {
 
-        val pizza1 = easyRandom.nextObject(PizzaCreate::class.java).copy(name="aoster",price = 1001)
-        val pizza2 = easyRandom.nextObject(PizzaCreate::class.java).copy(name="but",price = 1002)
-        val pizza3 = easyRandom.nextObject(PizzaCreate::class.java).copy(name="rolling",price = 0)
+        val pizza1 = easyRandom.nextObject(PizzaCreate::class.java).copy(name = "aoster", price = 1001)
+        val pizza2 = easyRandom.nextObject(PizzaCreate::class.java).copy(name = "but", price = 1002)
+        val pizza3 = easyRandom.nextObject(PizzaCreate::class.java).copy(name = "rolling", price = 0)
         val pizza1Created = pizzaService.addPizza(pizza1).block()
         val pizza2Created = pizzaService.addPizza(pizza2).block()
         val pizza3Created = pizzaService.addPizza(pizza3).block()
 
         val sort = Sort.by(Sort.Direction.ASC, "name")
-        var pageable = PageRequest.of(0, 2,sort)
+        var pageable = PageRequest.of(0, 2, sort)
 
         var pizzas = pizzaService.findAllPaginated(pageable)
 
@@ -61,16 +60,16 @@ class PizzaServiceIntegrationTests {
                 .expectNext(pizza2Created)
                 .verifyComplete()
 
-        pageable = PageRequest.of(1, 2,sort)
+        pageable = PageRequest.of(1, 2, sort)
 
-        pizzas=pizzaService.findAllPaginated(pageable)
+        pizzas = pizzaService.findAllPaginated(pageable)
         pizzas.test()
                 .expectNext(pizza3Created)
                 .verifyComplete()
 
-        pageable = PageRequest.of(2, 2,sort)
+        pageable = PageRequest.of(2, 2, sort)
 
-        pizzas=pizzaService.findAllPaginated(pageable)
+        pizzas = pizzaService.findAllPaginated(pageable)
         pizzas.test()
                 .verifyComplete()
 
@@ -92,16 +91,16 @@ class PizzaServiceIntegrationTests {
                 .expectNext(true)
                 .verifyComplete()
 
-        pageable = PageRequest.of(0, 4,sort)
+        pageable = PageRequest.of(0, 4, sort)
         val findAllPaginatedToList = pizzaService.findAllPaginatedToList(pageable)
         findAllPaginatedToList.test()
-                .expectNext(mutableListOf(pizza1Created!!,pizza2Created!!,pizza3Created!!))
+                .expectNext(mutableListOf(pizza1Created!!, pizza2Created!!, pizza3Created!!))
                 .verifyComplete()
 
-        val findAllPaginatedToSortedList= pizzaService.findAllPaginatedToSortedList(pageable)
+        val findAllPaginatedToSortedList = pizzaService.findAllPaginatedToSortedList(pageable)
 
         findAllPaginatedToSortedList.test()
-                .expectNext(mutableListOf(pizza1Created!!,pizza2Created!!,pizza3Created!!))
+                .expectNext(mutableListOf(pizza1Created!!, pizza2Created!!, pizza3Created!!))
                 .verifyComplete()
 
 
@@ -170,6 +169,25 @@ class PizzaServiceIntegrationTests {
         deletedPizza.test().verifyComplete()
 
     }
+
+    @Test
+    @Order(4)
+    fun `should find all non duplicated pizzas by description`() {
+
+        val pizza = easyRandom.nextObject(PizzaCreate::class.java).copy(description = "description")
+        val pizza2 = easyRandom.nextObject(PizzaCreate::class.java).copy(description = "description2")
+
+        val pizza1Saved = pizzaService.addPizza(pizza).block()
+        val pizza2Saved = pizzaService.addPizza(pizza2).block()
+        val deletedPizza = pizzaService.findAllNotExistWithDescriptionUsingWhenOperator("description3")
+
+        deletedPizza.test()
+                .expectNext(pizza1Saved)
+                .expectNext(pizza2Saved)
+                .verifyComplete()
+
+    }
+
 
 }
 
