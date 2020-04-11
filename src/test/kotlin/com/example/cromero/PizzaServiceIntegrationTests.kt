@@ -104,6 +104,15 @@ class PizzaServiceIntegrationTests {
                 .verifyComplete()
 
 
+
+        val findAllNotExistWithDescriptionUsingWhenOperator = pizzaService.findAllNotExistWithDescriptionUsingWhenOperator("description3")
+
+        findAllNotExistWithDescriptionUsingWhenOperator.test()
+                .expectNext(pizza1Created)
+                .expectNext(pizza2Created)
+                .expectNext(pizza3Created)
+                .verifyComplete()
+
     }
 
 
@@ -169,25 +178,6 @@ class PizzaServiceIntegrationTests {
         deletedPizza.test().verifyComplete()
 
     }
-
-    @Test
-    @Order(4)
-    fun `should find all non duplicated pizzas by description`() {
-
-        val pizza = easyRandom.nextObject(PizzaCreate::class.java).copy(description = "description")
-        val pizza2 = easyRandom.nextObject(PizzaCreate::class.java).copy(description = "description2")
-
-        val pizza1Saved = pizzaService.addPizza(pizza).block()
-        val pizza2Saved = pizzaService.addPizza(pizza2).block()
-        val deletedPizza = pizzaService.findAllNotExistWithDescriptionUsingWhenOperator("description3")
-
-        deletedPizza.test()
-                .expectNext(pizza1Saved)
-                .expectNext(pizza2Saved)
-                .verifyComplete()
-
-    }
-
 
 }
 
