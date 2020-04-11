@@ -53,6 +53,13 @@ https://projectreactor.io/docs/core/release/reference/#kotlin-extensions
  It is dropped if its test is either empty or its first emitted value is false. (similar to filter but we do not use value, instead
  of this it will be used a Publisher (method that returns a mono/flux boolean) )
 
+  @Transactional
+      override fun findAllNotExistWithDescriptionUsingWhenOperator(description: String): Flux<PizzaOut> {
+          return pizzaRepository.findAll().filterWhen { pizzaRepository.existsByDescriptionNot(description)}
+                  .map { it.convertToPizzaOut() }
+      }
+
+
 - switchIfEmpty: if empty result is published by observer.
   The code that you execute in switchIfEmpty is expected to be without side-effects.
   Unfortunately the documentation does not mention it, at the time of writing this blog.
