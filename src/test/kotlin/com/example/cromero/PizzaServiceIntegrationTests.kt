@@ -179,5 +179,24 @@ class PizzaServiceIntegrationTests {
 
     }
 
+    @Test
+    @Order(4)
+    fun `should add pizza returning mono boolean`() {
+
+        val pizza = easyRandom.nextObject(PizzaCreate::class.java)
+        val pizzaIsSaved = pizzaService.addPizzaReturnMonoBoolean(pizza)
+        pizzaIsSaved.test().expectNext(true)
+                .verifyComplete()
+    }
+
+    @Test
+    @Order(4)
+    fun `should add pizza returning mono void`() {
+
+        val pizza = easyRandom.nextObject(PizzaCreate::class.java)
+        val pizzaIsSaved = pizzaService.addPizzaReturnMonoVoid(pizza)
+        pizzaIsSaved.test().verifyComplete()
+    }
+
 }
 

@@ -3,7 +3,7 @@
 image:https://travis-ci.com/cristianprofile/spring-reactive-kotlin-mongo.svg?branch=master["Build Status", link="https://travis-ci.com/cristianprofile/spring-reactive-kotlin-mongo"]
 
 This project model a simple application managing pizzas. I am a vintage programmer so  I wont try to impress you
-using DDD (every talks about this buzzword but nobody knows how to implement it in real world). I'll use MVC using
+using DDD (everybody talks about this buzzword but nobody knows how to implement it in real world). I'll use MVC using
 classical 3 layers option: Controller+Service+Repository.
 
 Spring mvc reactive+Spring Data Mongo makes easy to create this demo application.
@@ -78,9 +78,12 @@ and can be accessed using the import as shown ( Extension function feature is sp
         .switchIfEmpty { missingOrdersDb.save(Order("order-id", false)) }
 
 - doOnNext: if you do not need to change values received by observer. Example logging
+- then: Return a Mono<Void> that completes when this Flux/Mono completes. This will actively ignore the sequence and only replay completion or error signals.
 
 ## Reactor's basic operator using Mono<Boolean>/Flux<Boolean>
 
+- hasElement(): very usefully when you need to return only a boolean if a mono operation ends ok ()
+- hasElement(T): very usefully when you need to return only a boolean if a mono/flux operation has this T element
 - logicalOr: operator used to link 2 observer publishing Mono<Boolean>
 - logicalAnd: operator used to link 2 observer publishing Mono<Boolean>
 - all: operator emits a single boolean true if all values of this sequence match the Predicate.

@@ -24,6 +24,10 @@ interface PizzaService {
     fun existAnyPizzaFree(): Mono<Boolean>
     @Transactional
     fun findAllNotExistWithDescriptionUsingWhenOperator(s: String): Flux<PizzaOut>
+    @Transactional
+    fun addPizzaReturnMonoBoolean(pizza: PizzaCreate): Mono<Boolean>
+    @Transactional
+    fun addPizzaReturnMonoVoid(pizza: PizzaCreate): Mono<Void>
 }
 
 @Service
@@ -79,7 +83,7 @@ class PizzaServiceImpl(val pizzaRepository: PizzaRepository) : PizzaService {
 
     @Transactional
     override fun findAllNotExistWithDescriptionUsingWhenOperator(description: String): Flux<PizzaOut> {
-        return pizzaRepository.findAll().filterWhen { pizzaRepository.existsByDescriptionNot(description)}
+        return pizzaRepository.findAll().filterWhen { it: Pizza? -> pizzaRepository.existsByDescriptionNot(description)}
                 .map { it.convertToPizzaOut() }
     }
 
@@ -95,6 +99,19 @@ class PizzaServiceImpl(val pizzaRepository: PizzaRepository) : PizzaService {
                 .map { it.convertToPizzaOut() }
                 .switchIfEmpty(PizzaDuplicatedException(pizza.name).toMono())
     }
+
+
+    @Transactional
+    override fun addPizzaReturnMonoBoolean(pizza: PizzaCreate): Mono<Boolean> {
+        return addPizza(pizza).hasElement()
+    }
+
+    @Transactional
+    // we don't want to return information of the operation ->only that operation ends ok
+    override fun addPizzaReturnMonoVoid(pizza: PizzaCreate): Mono<Void> {
+        return addPizza(pizza).then()
+    }
+
 
     @Transactional
     override fun deletePizza(id: Long): Mono<Void> {
