@@ -14,5 +14,4 @@ jobs:
           java-version: '8'
           distribution: 'adopt'
       - name: Build with Maven
-        working-directory: mylab-core
         run: mvn --batch-mode --update-snapshots install
