@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest
 import org.springframework.context.annotation.Import
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
+import org.springframework.test.context.TestPropertySource
 import reactor.kotlin.test.test
 import java.nio.charset.Charset
 
@@ -17,6 +18,7 @@ import java.nio.charset.Charset
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @DataMongoTest
 @Import(value = [PizzaServiceImpl::class])
+@TestPropertySource(properties = ["spring.mongodb.embedded.version=3.5.5"])
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
 class PizzaServiceIntegrationTests {
 
@@ -199,4 +201,3 @@ class PizzaServiceIntegrationTests {
     }
 
 }
-
