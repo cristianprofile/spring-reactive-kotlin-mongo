@@ -87,7 +87,7 @@
         <dependency>
             <groupId>org.javers</groupId>
             <artifactId>javers-core</artifactId>
-            <version>5.15.0</version>
+            <version>6.6.2</version>
         </dependency>
 
         <dependency>
