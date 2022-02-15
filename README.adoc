@@ -216,6 +216,3 @@ Assert in reactive functions is easy using StepVerifier:
                 .expectNext(addedPizza)
                 .verifyComplete()
     }
-
-
-
